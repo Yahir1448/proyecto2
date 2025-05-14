@@ -44,26 +44,68 @@ class GroupChattingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            _showAlert(context, 'Abriendo menú');
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(Icons.menu, color: Colors.white),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
           },
         ),
-        title: Text(
-          'Group chatting',
-          style: TextStyle(color: Colors.white, fontSize: 20),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Group chatting',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            Text(
+              'Chat with your friends',
+              style: TextStyle(color: Colors.white70, fontSize: 14),
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              _showAlert(context, 'Abriendo configuración');
-            },
-          ),
-        ],
       ),
-
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                'Menú',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Configuración'),
+              onTap: () {
+                Navigator.pop(context);
+                _showAlert(context, 'Abriendo configuración');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.brightness_6),
+              title: Text('Tema'),
+              onTap: () {
+                Navigator.pop(context);
+                _showAlert(context, 'Cambiando tema (oscuro/claro)');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Cerrar sesión'),
+              onTap: () {
+                Navigator.pop(context);
+                _showAlert(context, 'Cerrando sesión');
+              },
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
           Padding(
@@ -84,7 +126,6 @@ class GroupChattingScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -110,7 +151,6 @@ class GroupChattingScreen extends StatelessWidget {
           ),
         ],
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [
@@ -142,7 +182,10 @@ class GroupChattingScreen extends StatelessWidget {
               _showAlert(context, 'Abriendo History');
               break;
             case 3:
-              _showAlert(context, 'Abriendo Perfil');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
               break;
           }
         },
@@ -178,6 +221,62 @@ class GroupChattingScreen extends StatelessWidget {
         onPressed: () {
           _showAlert(context, message);
         },
+      ),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text('Perfil', style: TextStyle(color: Colors.white)),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('assets/images/person1.jpg'),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Usuario',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'usuario@ejemplo.com',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Acción'),
+                      content: Text('Editar perfil'),
+                      actions: [
+                        TextButton(
+                          child: Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Editar perfil'),
+            ),
+          ],
+        ),
       ),
     );
   }
